@@ -1,2 +1,2 @@
 # ContemVi
-Batch video production with content templates
+Batch video (incl. images) production with content templates
