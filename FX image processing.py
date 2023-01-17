@@ -5,9 +5,10 @@ from PIL import Image,ImageFont,ImageDraw
 import moviepy.editor as mp
 
 input ('复制所有气球文件和ZCOOLXiaoWei-Regular字体文件到当前订单文件夹了吗？(Y/y): ')
+input ('Q5-Q10 正方形 JPEG？(Y/y): ')
 
 nameofchild=input('寿星名字?: ')
-childage=input('几岁生日?: ')
+age=input('几岁生日?: ')
 peiyinfile=input('配音文件名(不需要要后缀):')
 
 path = os.getcwd()
@@ -38,7 +39,6 @@ print(x)
 
 index=0
 
-# Cut all image in list x into circle shape and save as.png
 for img in x:
     print(img)
     # Open the input image as numpy array, convert to RGB
@@ -65,49 +65,55 @@ for img in x:
 
 print("Circle cut done")
 
-#make image in front section and the main birthday image (part of deliverables) 制作片头和PS主图
-with Image.open(r"C:\Users\blues\Documents\AUTOMATION\Frozen\ps.png") as ps, \
-        Image.open(r"C:\Users\blues\Documents\AUTOMATION\Frozen\Piantou.png") as pt, \
-        Image.open('Q5.png') as im, \
-        Image.open(r"C:\Users\blues\Documents\AUTOMATION\Raw materials\Photos\base.png") as base:
+##制作片头和PS主图 Process PS(combied image with kids) and PT(1st image in video)
+
+ps=Image.open("Frozen\ps.png")
+pt=Image.open("Frozen\Piantou.png")
+im=Image.open('Q5.png')
+base=Image.open("base.png")
 
 newsize=(760,760)
 im=im.resize(newsize)
 
-#make PianTou Pt front section photo
+#make PianTou Pt photo
 base.paste(im,(1133,-14),im)
 base.paste(pt,(0,0),pt)
 base.save('pt1.png')
 
-#make main birthday PS photo and add texts
+#make PS photo and add texts
 base.paste(im,(1133,-14),im)
 base.paste(ps,(0,0),ps)
 base.save('ps1.png')
 
 #add age-number ballon
-balimg=Image.open('b'+childage+'.png')
+balimg=Image.open('b'+age+'.png')
 imgb=Image.open('ps1.png')
 imgb.paste(balimg,(0,0),balimg)
 imgb.save('ps1b.png')
 
 #add text with chi font
-fontchi=ImageFont.truetype(r"C:\Users\blues\Documents\自动化\Raw materials\TTF\ZCOOLKuaiLe-Regular.ttf",152)
+fontchi=ImageFont.truetype("ZCOOLKuaiLe-Regular.ttf",152)
 imgt=Image.open('ps1b.png')
 draw=ImageDraw.Draw(imgt)
 draw.text((696,338),nameofchild,(255,255,255),font=fontchi)
 imgt.save('ps1tchi.png')
 
 #add text with eng font
-fonteng=ImageFont.truetype(r"C:\Users\blues\Documents\自动化\Raw materials\TTF\love.ttf",164)
+fonteng=ImageFont.truetype("love.ttf",164)
 imgt=Image.open('ps1b.png')
 draw=ImageDraw.Draw(imgt)
 draw.text((696,332),nameofchild,(255,255,255),font=fonteng)
 imgt.save('ps1teng.png')
 
-print('Front section and the main birthday image completed 片头和PS图完成')
+print('片头和PS图完成 PS and PT done')
 
-# make end section Pianwei 制作片尾
-c=mp.VideoFileClip(r"C:\Users\blues\Documents\自动化\Frozen\片尾\base1.mp4")
+ps.close()
+pt.close()
+im.close()
+base.close()
+
+##制作片尾 Process PT(Ending scene)
+c=mp.VideoFileClip(r"C:\Users\blues\Documents\AUTOMATION\Frozen\片尾\base1.mp4")
 endtime=c.end
 print(endtime)
 
@@ -123,17 +129,18 @@ final=mp.CompositeVideoClip([c,ptext.set_duration(endtime-17)\
 
 final.write_videofile("片尾.mp4", threads = 16, fps=24, codec = "h264_nvenc")
 c.close()
-print('片尾完成')
+print('片尾完成 Ending done')
 
-# make end section 制作后段
+##制作后段 Process Main scene
+
 peiyin=mp.AudioFileClip(peiyinfile+'.mp3')
-v1=mp.VideoFileClip(r"C:\Users\blues\Documents\自动化\Frozen\后段\空后段1-1.mp4")
-v2=mp.VideoFileClip(r"C:\Users\blues\Documents\自动化\Frozen\后段\空后段3-1.mp4")
-v2r=mp.VideoFileClip(r"C:\Users\blues\Documents\自动化\Frozen\后段\空后段倒放3-1.mp4")
-vend=mp.VideoFileClip(r"C:\Users\blues\Documents\自动化\Frozen\后段\空后段结尾6-1.mp4")
-toaddaudio=mp.AudioFileClip(r"C:\Users\blues\Documents\自动化\Frozen\后段\等你再长一岁1.mp3")
+v1=mp.VideoFileClip("Frozen\后段\空后段1-1.mp4")
+v2=mp.VideoFileClip("Frozen\后段\空后段3-1.mp4")
+v2r=mp.VideoFileClip("Frozen\后段\空后段倒放3-1.mp4")
+vend=mp.VideoFileClip("Frozen\后段\空后段结尾6-1.mp4")
+toaddaudio=mp.AudioFileClip("Frozen\后段\等你再长一岁1.mp3")
 
-
+#start calculating suitable duration
 vit=(v1.end)
 v2t=(v2.end)
 v2rt=(v2r.end)
@@ -202,3 +209,5 @@ v1.close()
 v2.close()
 v2r.close()
 vend.close()
+
+input('100% completed! Q4-魔球，Q10-雪花框')
