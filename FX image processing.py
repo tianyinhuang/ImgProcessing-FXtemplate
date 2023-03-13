@@ -4,12 +4,9 @@ import numpy as np
 from PIL import Image,ImageFont,ImageDraw
 import moviepy.editor as mp
 
-input ('复制所有气球文件和ZCOOLXiaoWei-Regular字体文件到当前订单文件夹了吗？(Y/y): ')
-input ('Q5-Q10 正方形 JPEG？(Y/y): ')
-
-nameofchild=input('寿星名字?: ')
-age=input('几岁生日?: ')
-peiyinfile=input('配音文件名(不需要要后缀):')
+nameofchild=input('寿星名字? Name of the child?: ')
+age=input('几岁生日? Age of the child?: ')
+peiyinfile=input('配音文件名(不需要要后缀)? File name of the TTS audio (exclude .mp3)?:')
 
 path = os.getcwd()
 print (path)
@@ -18,7 +15,7 @@ x=list()
 files = os.listdir(path)
 print (files)
 
-targetlist=['Q5','Q6','Q7','Q8','Q9','Q10']
+targetlist=['Q5','Q6','Q7','Q8','Q9','Q10'] #assuming Q5-Q10 photos have been collected and saved in current dict
 
 #find all file in targetlist and add to list X
 for f in files:
@@ -117,7 +114,7 @@ c=mp.VideoFileClip(r"C:\Users\blues\Documents\AUTOMATION\Frozen\片尾\base1.mp4
 endtime=c.end
 print(endtime)
 
-pianweitext=("祝"+nameofchild+"小公主生日快乐！")
+pianweitext=("祝"+nameofchild+"小公主生日快乐！") #wish the child a happy b-day in Chinese
 
 bgsize=(1920,1080)
         
@@ -129,16 +126,16 @@ final=mp.CompositeVideoClip([c,ptext.set_duration(endtime-17)\
 
 final.write_videofile("片尾.mp4", threads = 16, fps=24, codec = "h264_nvenc")
 c.close()
-print('片尾完成 Ending done')
+print('片尾完成 Ending part done')
 
 ##制作后段 Process Main scene
 
 peiyin=mp.AudioFileClip(peiyinfile+'.mp3')
-v1=mp.VideoFileClip("Frozen\后段\空后段1-1.mp4")
-v2=mp.VideoFileClip("Frozen\后段\空后段3-1.mp4")
-v2r=mp.VideoFileClip("Frozen\后段\空后段倒放3-1.mp4")
-vend=mp.VideoFileClip("Frozen\后段\空后段结尾6-1.mp4")
-toaddaudio=mp.AudioFileClip("Frozen\后段\等你再长一岁1.mp3")
+v1=mp.VideoFileClip("Frozen1-1.mp4")
+v2=mp.VideoFileClip("Frozen3-1.mp4")
+v2r=mp.VideoFileClip("Frozen_rev_3-1.mp4")
+vend=mp.VideoFileClip("Frozen6-1.mp4")
+toaddaudio=mp.AudioFileClip("Frozen_extra1.mp3")
 
 #start calculating suitable duration
 vit=(v1.end)
@@ -162,7 +159,7 @@ v2sub=v2.subclip(0,lengv)
 v2misub=v2r.subclip(0,lengmiv)
 
 if audiodur<(vit+vet):
-    if input('Want to add 再长一岁？:')== 'y' or 'Y':
+    if input('Want to add the extra recording 再长一岁？:')== 'y' or 'Y':
         outaudio=mp.concatenate_audioclips([peiyin,toaddaudio])
         outaudio.write_audiofile('11-1.mp3')
         peiyin=mp.AudioFileClip("11-1.mp3")
